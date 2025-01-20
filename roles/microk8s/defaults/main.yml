@@ -1,0 +1,11 @@
+mk8s_user_username: "captain"
+mk8s_user_password: ~
+
+mk8s_user_initial_group: "microk8s"
+mk8s_user_shell: "/bin/bash"
+mk8s_kubectl_alias_key: "kubectl"
+mk8s_kubectl_alias_value: "microk8s.kubectl"
+mk8s_helm_alias_key: "helm"
+mk8s_helm_alias_value: "microk8s.helm"
+
+mk8s_cluster_inviter: "microk8s-node1"

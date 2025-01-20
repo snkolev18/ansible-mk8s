@@ -1,0 +1,26 @@
+- name: "Install microk8s"
+  snap:
+    name: microk8s
+    classic: yes
+- user:
+    name: "{{ mk8s_user_username }}"
+    groups:
+      - "{{ mk8s_user_initial_group }}"
+      - "sudo"
+    shell: "{{ mk8s_user_shell }}"
+    password: "{{ mk8s_user_password }}"
+
+- name: "Create alias for kubectl"
+  lineinfile:
+    line: "alias {{ mk8s_kubectl_alias_key }}='{{ mk8s_kubectl_alias_value }}'"
+    path: "/home/{{ mk8s_user_username }}/.bash_aliases"
+    create: yes
+- name: "Create alias for helm"
+  lineinfile:
+    line: "alias {{ mk8s_helm_alias_key }}='{{ mk8s_helm_alias_value }}'"
+    path: "/home/{{ mk8s_user_username }}/.bash_aliases"
+    create: yes
+
+- name: "Activate metallb and set ip ranges"
+  shell:
+    cmd: "microk8s enable metallb:{{ hostvars[inventory_hostname].metallb_ip_ranges }}"

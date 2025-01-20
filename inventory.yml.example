@@ -1,0 +1,14 @@
+all:
+  children:
+    ungrouped:
+      hosts:
+        microk8s-node1:
+          ansible_host: 192.168.1.50
+          ansible_password: ~
+          ansible_python_interpreter: /usr/bin/python3
+          ansible_user: ~
+        microk8s-node2:
+          ansible_host: 192.168.1.51
+          ansible_password: ~
+          ansible_python_interpreter: /usr/bin/python3
+          ansible_user: ~
