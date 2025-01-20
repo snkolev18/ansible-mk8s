@@ -1,4 +1,4 @@
-Ansible Playbook for MicroK8S with Terraform configs to dynamically create and provision Ubuntu Noble VMs in your Proxmox environment.
+Ansible Playbook for MicroK8S with Terraform configs to dynamically create and provision Ubuntu Noble VMs in your Proxmox environment, which will then be used as k8s nodes
 
 ### Playing
 
