@@ -19,9 +19,9 @@ pip3 install ansible
 Note: *You cannot have an Ansible controller on Windows*.  
 Reason: https://blog.rolpdog.com/2020/03/why-no-ansible-controller-for-windows.html
 
-Refer to your OS distribution's package manager
-For example, Ubuntu:
-```
+Refer to your OS distribution's package manager  
+For example, installation on Ubuntu:
+```bash
 apt update && apt install ansible
 ```
 
