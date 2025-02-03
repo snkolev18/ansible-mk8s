@@ -1,0 +1,25 @@
+all:
+  vars:
+    ansible_ssh_common_args: ~
+  children:
+    microk8s-nodes:
+      vars:
+        ansible_user: ~
+        ansible_password: ~
+        ansible_python_interpreter: /usr/bin/python3
+
+        mk8s_user_username: "captain"
+        mk8s_user_password: ~
+        mk8s_user_password_salt: ~
+      children:
+        microk8s-masters:
+          hosts:
+            microk8s-node1:
+              ansible_host: ~
+        microk8s-workers:
+          hosts:
+            microk8s-node2:
+              ansible_host: ~
+        microk8s-inviter:
+          hosts:
+            microk8s-node1:

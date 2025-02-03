@@ -1,7 +1,3 @@
-mk8s_user_username: "captain"
-mk8s_user_password: ~
-mk8s_user_password_salt: ~
-
 mk8s_user_initial_group: "microk8s"
 mk8s_user_shell: "/bin/bash"
 mk8s_kubectl_alias_key: "kubectl"

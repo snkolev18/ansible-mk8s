@@ -1,26 +1,42 @@
-- hosts: all
+- hosts: microk8s-nodes
   become: yes
-  become_user: root
-  vars:
-    mk8s_user_username: "captain"
-    mk8s_user_password: ~
-
-    mk8s_user_initial_group: "microk8s"
-    mk8s_user_shell: "/bin/bash"
-    mk8s_kubectl_alias_key: "kubectl"
-    mk8s_kubectl_alias_value: "microk8s.kubectl"
-    mk8s_helm_alias_key: "helm"
-    mk8s_helm_alias_value: "microk8s.helm"
-    mk8s_cluster_inviter: "microk8s-node1"
   roles:
     - microk8s
-- post_tasks:
-  - name: "Create cluster invitation"
-    shell:
-      cmd: "microk8s add-node"
-    register: "{{ cluster_invite_result }}"
-    delegate_to: "{{ mk8s_cluster_inviter }}"
-  - name: "Join other nodes cluster"
-    shell:
-      cmd: "microk8s join {{ cluster_invite_result.stdout }}"
-    when: inventory_hostname != mk8s_cluster_inviter
+
+- hosts: microk8s-inviter
+  become: true
+  tasks:
+    - assert:
+        that: "{{ groups['microk8s-inviter'] | length == 1 }}" 
+    - name: "Create cluster invitation"
+      command: "microk8s add-node"
+      register: cluster_join_commands
+    - name: "Get cluster nodes information"
+      command: "microk8s.kubectl get nodes -o json"
+      register: cluster_nodes_json
+    - set_fact:
+        mk8s_master_join_command:  "{{ cluster_join_commands.stdout_lines[1] }}"
+        mk8s_worker_join_command: "{{ cluster_join_commands.stdout_lines[4] }}"
+        cluster_nodes: "{{ cluster_nodes_json.stdout | from_json }}"
+      delegate_to: localhost
+      delegate_facts: true
+    - set_fact:
+        joined_nodes: "{{ hostvars.localhost.cluster_nodes['items'] | map(attribute='metadata.name') | list }}"
+      delegate_to: localhost
+      delegate_facts: true
+    - debug:
+        msg: "{{ hostvars.localhost }}"
+
+- name: Join microk8s master nodes
+  hosts: microk8s-masters:!microk8s-inviter
+  post_tasks:
+    - name: "Join master nodes"
+      command: "{{ hostvars.localhost.mk8s_master_join_command }}"
+
+- name: Join mikrok8s worker nodes
+  hosts: microk8s-workers
+  become: true
+  tasks:
+    - name: "Join worker nodes"
+      command: "{{ hostvars.localhost.mk8s_worker_join_command }}"
+      when: ansible_hostname not in hostvars.localhost.joined_nodes

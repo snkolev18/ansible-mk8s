@@ -2,13 +2,17 @@
   snap:
     name: microk8s
     classic: yes
+- set_fact:
+    mk8s_user_password_dec: "{{ mk8s_user_password }}"
+    mk8s_user_password_salt_dec:  "{{ mk8s_user_password_salt }}"
 - user:
     name: "{{ mk8s_user_username }}"
     groups:
       - "{{ mk8s_user_initial_group }}"
       - "sudo"
     shell: "{{ mk8s_user_shell }}"
-    password: "{{ mk8s_user_password }}"
+    password: "{{ mk8s_user_password_dec | password_hash('sha512', mk8s_user_password_salt_dec) }}"
+    update_password: on_create
 
 - name: "Create alias for kubectl"
   lineinfile:
@@ -24,3 +28,6 @@
 - name: "Activate metallb and set ip ranges"
   shell:
     cmd: "microk8s enable metallb:{{ hostvars[inventory_hostname].metallb_ip_ranges }}"
+  tags:
+    - never
+    - metallb_ip_ranges

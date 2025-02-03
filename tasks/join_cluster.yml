@@ -1,2 +1,0 @@
-- shell:
-    cmd: "microk8s join {{ cluster_invite_result.stdout }}"

@@ -1,4 +1,0 @@
-- shell:
-    cmd: "microk8s add-node"
-  register: "{{ cluster_invite_result }}"
-  delegate_to: "{{ mk8s_cluster_inviter }}"
